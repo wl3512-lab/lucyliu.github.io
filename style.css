@@ -231,7 +231,7 @@ body::after{display:none;}  /* disable old body scanline */
 }
 .lock-hint{
   position:absolute;
-  bottom:28px;  /* above home indicator */
+  bottom:48px;  /* moved up */
   left:50%;
   transform:translateX(-50%);
   font-size:11px;
@@ -1104,7 +1104,7 @@ body::after{display:none;}  /* disable old body scanline */
 /* ── HOME BAR TAP TARGET ────────────────── */
 #home-bar{
   position:absolute;
-  bottom:8px;
+  bottom:28px;
   left:50%;
   transform:translateX(-50%);
   width:140px;
