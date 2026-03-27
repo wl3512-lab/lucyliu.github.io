@@ -15,6 +15,18 @@
 <!-- Phone frame — constrains game to iPhone dimensions -->
 <div id="phone-frame">
 <div class="scanlines"></div>
+<!-- Screen cracks — two cracks on the right side (branches only) -->
+<svg class="screen-cracks" viewBox="0 0 375 667" xmlns="http://www.w3.org/2000/svg">
+  <!-- Crack 1 branches — upper right -->
+  <path d="M349,142 L354,150 358,158 356,164" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M336,170 L342,178 346,186" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.4" stroke-linecap="round"/>
+  <path d="M330,188 L325,183 321,179" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.4" stroke-linecap="round"/>
+
+  <!-- Crack 2 branches — mid-right -->
+  <path d="M351,334 L357,342 361,351 358,358" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M335,366 L329,360 324,356" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.4" stroke-linecap="round"/>
+  <path d="M340,349 L346,358 349,367 347,372" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.4" stroke-linecap="round"/>
+</svg>
 
 <!-- P5 CANVAS — z-index 0 -->
 <div id="p5-canvas"></div>
@@ -38,7 +50,7 @@
 </div>
 
 <!-- ══ MOTION NOTIFICATION (side-quest popup) — appears at top of phone frame -->
-<div id="motion-notif" class="motion-notif" aria-live="polite" role="status">
+<div id="motion-notif" class="motion-notif" aria-live="polite" role="status" onclick="openCamera(); this.classList.remove('show')">
   <div class="mn-row">
     <span class="mn-app">Home Cameras</span>
     <span class="mn-time">now</span>
@@ -131,7 +143,8 @@
   <div class="camera-content">
     <h1 class="camera-title">Home Cameras</h1>
 
-    <div class="cam-feed" id="cam-front">
+    <div class="cam-feed" id="cam-front" onclick="selectCam(this)">
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Front Door</span>
         <span class="cam-status"><span class="live-dot"></span> Live</span>
@@ -169,7 +182,8 @@
       </div>
     </div>
 
-    <div class="cam-feed active-cam" id="cam-back">
+    <div class="cam-feed active-cam" id="cam-back" onclick="selectCam(this)">
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Back Door</span>
         <span class="cam-status"><span class="live-dot"></span> Last Updated: 3 seconds ago</span>
@@ -210,7 +224,8 @@
       </div>
     </div>
 
-    <div class="cam-feed" id="cam-window">
+    <div class="cam-feed" id="cam-window" onclick="selectCam(this)">
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Bedroom Window</span>
         <span class="cam-status"><span class="offline-dot"></span> Offline</span>

@@ -30,6 +30,9 @@ let checkedItems        = {};
 let motionLineCount     = 0;      // counts main chat lines for motion side-quest
 let motionTriggered     = false;  // guard so motion notif fires once
 let motionTriggerAt     = 0;      // randomized threshold (15-25)
+let smashPredicted      = false;  // bot has warned about the smash
+let smashFired          = false;  // smash effect already triggered
+let smashTriggerAt      = 0;      // randomized turn for smash (8-14)
 
 // ── AUDIO SYSTEM ─────────────────────────────────────────────
 let audioCtx = null;
@@ -146,6 +149,98 @@ function playTextPing() {
     osc.start(now + i * 0.07);
     osc.stop(now + i * 0.07 + 0.15);
   });
+}
+
+// ── SMASH SOUND — loud impact + glass shatter ───────────────
+function playSmashSound() {
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+
+  // Layer 1 — heavy impact thud
+  const thudLen = ctx.sampleRate * 0.4;
+  const thudBuf = ctx.createBuffer(1, thudLen, ctx.sampleRate);
+  const thudData = thudBuf.getChannelData(0);
+  for (let i = 0; i < thudLen; i++) {
+    const t = i / ctx.sampleRate;
+    thudData[i] = (Math.random() * 2 - 1) * Math.exp(-t * 12) * 0.9;
+  }
+  const thud = ctx.createBufferSource();
+  thud.buffer = thudBuf;
+  const thudFilter = ctx.createBiquadFilter();
+  thudFilter.type = 'lowpass';
+  thudFilter.frequency.value = 200;
+  const thudGain = ctx.createGain();
+  thudGain.gain.setValueAtTime(0.5, now);
+  thudGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+  thud.connect(thudFilter);
+  thudFilter.connect(thudGain);
+  thudGain.connect(ctx.destination);
+  thud.start(now);
+
+  // Layer 2 — glass shatter (high freq noise burst)
+  const shatterLen = ctx.sampleRate * 0.6;
+  const shatterBuf = ctx.createBuffer(1, shatterLen, ctx.sampleRate);
+  const shatterData = shatterBuf.getChannelData(0);
+  for (let i = 0; i < shatterLen; i++) {
+    const t = i / ctx.sampleRate;
+    shatterData[i] = (Math.random() * 2 - 1) * Math.exp(-t * 8) * (Math.random() > 0.4 ? 1 : 0);
+  }
+  const shatter = ctx.createBufferSource();
+  shatter.buffer = shatterBuf;
+  const shatterFilter = ctx.createBiquadFilter();
+  shatterFilter.type = 'highpass';
+  shatterFilter.frequency.value = 3000;
+  const shatterGain = ctx.createGain();
+  shatterGain.gain.setValueAtTime(0.25, now + 0.05);
+  shatterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+  shatter.connect(shatterFilter);
+  shatterFilter.connect(shatterGain);
+  shatterGain.connect(ctx.destination);
+  shatter.start(now + 0.05);
+
+  // Layer 3 — sub-bass boom
+  const boom = ctx.createOscillator();
+  boom.type = 'sine';
+  boom.frequency.setValueAtTime(60, now);
+  boom.frequency.exponentialRampToValueAtTime(20, now + 0.3);
+  const boomGain = ctx.createGain();
+  boomGain.gain.setValueAtTime(0.4, now);
+  boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+  boom.connect(boomGain);
+  boomGain.connect(ctx.destination);
+  boom.start(now);
+  boom.stop(now + 0.4);
+}
+
+// ── SMASH VISUAL — screen shake + white flash ───────────────
+function triggerSmashEffect() {
+  const frame = document.getElementById('phone-frame');
+  playSmashSound();
+
+  // White flash overlay
+  const flash = document.createElement('div');
+  flash.style.cssText = 'position:absolute;inset:0;background:white;z-index:997;pointer-events:none;opacity:0.7;transition:opacity 0.3s ease;';
+  frame.appendChild(flash);
+  setTimeout(() => { flash.style.opacity = '0'; }, 50);
+  setTimeout(() => { flash.remove(); }, 400);
+
+  // Heavy screen shake
+  frame.style.transition = 'none';
+  let shakes = 0;
+  const shakeLoop = setInterval(() => {
+    shakes++;
+    const x = (Math.random() - 0.5) * 12;
+    const y = (Math.random() - 0.5) * 8;
+    frame.style.transform = `translate(${x}px, ${y}px)`;
+    if (shakes >= 14) {
+      clearInterval(shakeLoop);
+      frame.style.transition = 'transform 0.2s ease';
+      frame.style.transform = '';
+    }
+  }, 40);
+
+  // Glitch on canvas
+  if (p5inst) p5inst.triggerGlitch(60);
 }
 
 function isChatScreenVisible() {
@@ -310,6 +405,11 @@ function resetConversation() {
   motionLineCount = 0;
   motionTriggered = false;
   motionTriggerAt = 15 + Math.floor(Math.random() * 11); // 15..25 inclusive
+
+  // reset smash event
+  smashPredicted = false;
+  smashFired     = false;
+  smashTriggerAt = 8 + Math.floor(Math.random() * 7); // 8..14 inclusive
 }
 
 function getActPrompt(act) {
@@ -511,6 +611,17 @@ function openContact(name, preview) {
   // show existing message from them
   addBubble(msgs, preview, 'them', false);
   document.getElementById('contact-convo').style.transform = 'translateX(0)';
+
+  // mark as read — remove unread dot and unread class from contact row
+  const contacts = document.querySelectorAll('.contact-row');
+  contacts.forEach(c => {
+    const n = c.querySelector('.contact-row-name');
+    if (n && n.textContent.trim() === name) {
+      c.classList.remove('unread');
+      const dot = c.querySelector('.unread-dot');
+      if (dot) dot.style.display = 'none';
+    }
+  });
 }
 
 function closeContact() {
@@ -564,7 +675,30 @@ function openCamera() {
 }
 function closeCamera() {
   if (document.getElementById('camera-screen').classList.contains('cam-horror')) return;
+  // exit any fullscreen cam first
+  const fs = document.querySelector('.cam-fullscreen');
+  if (fs) exitFullscreenCam(fs);
   document.getElementById('camera-screen').style.transform = 'translateX(100%)';
+}
+
+// ── CAMERA SELECT / FULLSCREEN ───────────────────────────────
+function selectCam(el) {
+  // if already fullscreen, ignore (back button handles exit)
+  if (el.classList.contains('cam-fullscreen')) return;
+
+  // if already selected (has cyan border), go fullscreen
+  if (el.classList.contains('active-cam')) {
+    el.classList.add('cam-fullscreen');
+    return;
+  }
+
+  // otherwise, select it — deselect others
+  document.querySelectorAll('.cam-feed').forEach(c => c.classList.remove('active-cam'));
+  el.classList.add('active-cam');
+}
+
+function exitFullscreenCam(el) {
+  el.classList.remove('cam-fullscreen');
 }
 
 // swipe-up on lock screen → home
@@ -724,7 +858,7 @@ function handleChatSend() {
   }
 
   // ── PROOF — player asks for proof ──
-  const wantsProof = /\b(prove|prove it|how do i know|prove you're|prove you)\b/.test(lc);
+  const wantsProof = /\b(prove|prove it|how do i know|prove you're|prove you|don't believe|dont believe|i don't trust|i dont trust|why should i trust|why should i believe|not trustworthy|you're lying|youre lying|you lying|bullshit|bs|liar|cap)\b/.test(lc);
   if (wantsProof) {
     triggerProofSequence();
     return; // don't also send to API
@@ -742,17 +876,12 @@ function handleChatSend() {
   callAPI(text);
 }
 
-// --- Proof sequence: predicts an incoming text and simulates it ---
+// --- Proof sequence: mentions unread messages and phone cracks as proof ---
 function triggerProofSequence() {
-  // immediate bot message predicting an incoming text
-  const pred = "You will get a text from Tyler in 10 seconds. Don't answer it — he's asking if you're free tonight.";
-  addBotMessage(pred, false, true);
-
-  // also show top notification briefly describing the prediction
-  showMessageNotif('Tyler', "Incoming text in 10s: 'you free tonight?'");
-
-  // schedule the simulated incoming text (10s)
-  simulateIncomingText('Tyler', "you free tonight?", 10000);
+  addBotMessage("you have 3 unread messages right now. from mom, jess, and tyler. you haven't opened any of them.", false, true);
+  setTimeout(() => {
+    addBotMessage("and i know you have two cracks on the right side of your phone.", false, true);
+  }, 2000);
 }
 
 function showMessageNotif(appName, body, ms=2600) {
@@ -992,6 +1121,27 @@ function callAPI(userText) {
         conversationHistory.push({ role:"assistant", content: instruction });
         if (p5inst && instructionIndex >= 4) p5inst.triggerGlitch(15);
       }, 1800);
+    }
+
+    // ── SMASH EVENT — bot predicts, then it happens ──
+    // 2 turns before smash: bot warns
+    if (!smashPredicted && turnCount === smashTriggerAt - 2) {
+      smashPredicted = true;
+      setTimeout(() => {
+        addBotMessage("you're going to hear something. don't move. check your front door camera tomorrow.", false, true);
+        conversationHistory.push({ role:"assistant", content: "you're going to hear something. don't move. check your front door camera tomorrow." });
+      }, 1500);
+    }
+    // smash triggers
+    if (!smashFired && turnCount >= smashTriggerAt) {
+      smashFired = true;
+      setTimeout(() => {
+        triggerSmashEffect();
+        setTimeout(() => {
+          addBotMessage("that was it. don't go to the door.", true, true);
+          conversationHistory.push({ role:"assistant", content: "that was it. don't go to the door." });
+        }, 1200);
+      }, 3000);
     }
 
     // Camera proof — bot predicts motion, then notification proves it
@@ -1905,6 +2055,12 @@ function showCameraNotif() {
   sender.textContent = '';
   msg.textContent    = 'Motion detected — Front Door';
 
+  // Make notification clickable to open cameras
+  notif.onclick = () => {
+    openCamera();
+    notif.classList.remove('visible');
+  };
+
   notif.classList.add('visible');
   if (p5inst) p5inst.triggerGlitch(25);
   playAlarmSound(3.5);
@@ -1912,11 +2068,12 @@ function showCameraNotif() {
   clearTimeout(survNotifTimer);
   survNotifTimer = setTimeout(() => {
     notif.classList.remove('visible');
-    // Restore default content after dismiss
+    // Restore default content and click behavior after dismiss
     setTimeout(() => {
       icon.innerHTML = '<svg width="14" height="13" viewBox="0 0 14 13" fill="none"><path d="M1 2a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0113 2v7a1.5 1.5 0 01-1.5 1.5H4.5L1 12V2z" fill="#7878AC"/></svg>';
       app.textContent    = 'Messages';
       sender.textContent = 'Unknown';
+      notif.onclick      = null;
     }, 400);
   }, 4000);
 }
