@@ -1104,13 +1104,13 @@ body::after{display:none;}  /* disable old body scanline */
 /* ── HOME BAR TAP TARGET ────────────────── */
 #home-bar{
   position:absolute;
-  bottom:28px;
+  bottom:56px;
   left:50%;
   transform:translateX(-50%);
   width:140px;
-  height:8px;
-  border-radius:4px;
-  background:rgba(255,255,255,0.25);
+  height:12px;
+  border-radius:6px;
+  background:rgba(255,255,255,0.4);
   z-index:100;
   cursor:pointer;
   transition:background 0.2s ease, box-shadow 0.2s ease;
