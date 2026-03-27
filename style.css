@@ -34,73 +34,58 @@ html,body{
   justify-content:center;
 }
 
-/* ── PHONE WRAPPER (device chassis) ─────── */
-#phone-wrapper{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  max-height:100vh;
-  overflow:visible;  /* allow home button to sit outside frame */
-  background:#1a1a1a;
-  border-radius:44px;
-  border:2px solid #333;
-  padding:12px 12px 16px;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08),
-    inset 0 0 0 1px rgba(255,255,255,0.04),
-    0 8px 32px rgba(0,0,0,0.9),
-    0 20px 60px rgba(0,0,0,0.6);
-}
-
 /* ── PHONE FRAME ────────────────────────── */
-/* iPhone 8: 375×667 (4.7")                */
-/* Uses 375×667 as base, scales up on      */
-/* taller viewports. On mobile it fills    */
-/* the screen naturally.                   */
+/* iPhone 16 standard: 393×852 (6.1")       */
+/* iPhone 16 Plus:     430×932 (6.7")       */
+/* Uses 393×852 as base, scales up on       */
+/* taller viewports. On mobile it fills     */
+/* the screen naturally.                    */
 #phone-frame{
   position:relative;
-  width:375px;
-  height:667px;
+  width:393px;
+  height:852px;
   max-width:100vw;
-  max-height:calc(100vh - 110px);
+  max-height:100vh;
   background:var(--bg);
   overflow:hidden;
-  border-radius:30px;
-  border:none;
+  border-radius:48px;
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.06);
+    0 0 0 2px rgba(255,255,255,0.08),
+    0 0 0 6px #111,
+    0 0 80px rgba(0,0,0,0.8);
   flex-shrink:0;
 }
-/* On larger screens, use slightly larger variant */
-@media (min-height:750px) and (min-width:420px){
-  #phone-frame{ width:375px; height:667px; }
+/* On larger screens, use 6.7" Plus size */
+@media (min-height:940px) and (min-width:440px){
+  #phone-frame{ width:430px; height:932px; }
 }
 /* On actual mobile — fill the whole screen, no bezel */
-@media (max-width:400px){
-  #phone-wrapper{
-    background:none;
-    border:none;
-    border-radius:0;
-    padding:0;
-    box-shadow:none;
-    max-height:none;
-  }
+@media (max-width:440px){
   #phone-frame{
     width:100vw;
     height:100vh;
-    max-height:100vh;
     border-radius:0;
     box-shadow:none;
   }
-  #home-bar{ display:none; }
   #phone-frame::before,
   #phone-frame::after{ display:none; }
   #phone-frame > .scanlines{ border-radius:0; }
 }
-/* iPhone 8 has no notch */
+/* Dynamic island notch */
 #phone-frame::before{
-  display:none;
+  content:'';
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:126px;
+  height:36px;
+  background:#000;
+  border-radius:20px;
+  z-index:999;
+  pointer-events:none;
 }
+/* Home indicator bar — now handled by #home-bar (interactive) */
 
 /* Screen cracks — persistent overlay */
 .screen-cracks{
@@ -480,7 +465,11 @@ body::after{display:none;}  /* disable old body scanline */
   letter-spacing:0.02em;
 }
 .home-swipe-bar{
-  display:none; /* hidden — physical home button below phone instead */
+  width:36px;height:4px;
+  background:rgba(255,255,255,0.3);
+  border-radius:2px;
+  margin:0 auto 20px;  /* clear home indicator */
+  position:relative;z-index:2;
 }
 
 /* ── REMINDERS SCREEN ────────────────────── */
@@ -488,13 +477,10 @@ body::after{display:none;}  /* disable old body scanline */
   position:absolute;inset:0;
   z-index:49;
   background:#1a1a2e;
-  transform:scale(0.88);
-  opacity:0;
-  pointer-events:none;
-  transition:transform 0.38s cubic-bezier(0.2,0.9,0.3,1), opacity 0.3s ease;
+  transform:translateX(100%);
+  transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
   display:flex;
   flex-direction:column;
-  border-radius:14px;
 }
 #reminders-screen.on{transform:translateX(0);}
 .reminders-full{
@@ -551,16 +537,13 @@ body::after{display:none;}  /* disable old body scanline */
   position:absolute;inset:0;
   z-index:49;
   background:var(--surface-alt,#0c0c14);
-  transform:scale(0.88);
-  opacity:0;
-  pointer-events:none;
-  transition:transform 0.38s cubic-bezier(0.2,0.9,0.3,1), opacity 0.3s ease;
+  transform:translateX(100%);
+  transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
   display:flex;
   flex-direction:column;
   overflow:hidden;
-  border-radius:14px;
 }
-#camera-screen.on{transform:scale(1); opacity:1; pointer-events:auto; border-radius:0;}
+#camera-screen.on{transform:translateX(0);}
 .camera-content{
   flex:1;
   overflow-y:auto;
@@ -580,12 +563,9 @@ body::after{display:none;}  /* disable old body scanline */
   margin-bottom:14px;
   background:#08080f;
   cursor:pointer;
-  transition:border 0.2s ease, box-shadow 0.2s ease;
-  border:1.5px solid transparent;
 }
 .cam-feed.active-cam{
   border:1.5px solid var(--cyan);
-  box-shadow:0 0 10px rgba(77,255,240,0.15);
 }
 /* ── FULLSCREEN CAMERA ────────────────────── */
 .cam-feed.cam-fullscreen{
@@ -1128,42 +1108,34 @@ body::after{display:none;}  /* disable old body scanline */
 }
 .status-flicker{animation:statusFlicker 0.3s steps(1);}
 
-/* ── HOME BUTTON (iPhone 8 — integrated into bezel) ────────── */
+/* ── HOME BAR TAP TARGET ────────────────── */
 #home-bar{
   position:absolute;
-  bottom:-28px;  /* pop out from bezel like iPhone 8 home button */
+  bottom:8px;
   left:50%;
   transform:translateX(-50%);
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(80,80,80,0.25));
-  border:2px solid #333;
-  box-shadow:
-    inset 0 2px 4px rgba(255,255,255,0.1),
-    inset 0 -2px 4px rgba(0,0,0,0.5),
-    0 2px 8px rgba(0,0,0,0.4);
-  z-index:150;
+  width:140px;
+  height:8px;
+  border-radius:4px;
+  background:rgba(255,255,255,0.25);
+  z-index:100;
   cursor:pointer;
-  transition:all 0.15s ease;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  font-size:20px;
-  color:rgba(255,255,255,0.4);
+  transition:background 0.2s ease, box-shadow 0.2s ease;
 }
 #home-bar:hover{
-  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(100,100,100,0.4));
+  background:rgba(77,255,240,0.4);
+  box-shadow:0 0 10px rgba(77,255,240,0.2), 0 0 3px rgba(77,255,240,0.3);
 }
 #home-bar:active{
-  background:radial-gradient(circle at 30% 30%, rgba(77,255,240,0.3), rgba(77,255,240,0.15));
-  border-color:var(--cyan);
-  box-shadow:
-    inset 0 2px 4px rgba(77,255,240,0.2),
-    inset 0 -2px 4px rgba(77,255,240,0.2),
-    0 0 16px rgba(77,255,240,0.4),
-    0 2px 8px rgba(0,0,0,0.4);
+  background:rgba(77,255,240,0.6);
+  box-shadow:0 0 14px rgba(77,255,240,0.3);
+}
+#home-bar.hint-pulse{
+  animation:homeBarPulse 1.8s ease-in-out 3;
+}
+@keyframes homeBarPulse{
+  0%,100%{background:rgba(255,255,255,0.25);box-shadow:none;}
+  50%{background:rgba(77,255,240,0.35);box-shadow:0 0 10px rgba(77,255,240,0.2);}
 }
 
 /* ── CAMERA HORROR — ENDING C ───────────── */
