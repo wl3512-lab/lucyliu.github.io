@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LOOP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Phone frame — constrains game to iPhone dimensions -->
+<div id="phone-frame">
+<div class="scanlines"></div>
+
+<!-- P5 CANVAS — z-index 0 -->
+<div id="p5-canvas"></div>
+
+<!-- ══ LOCK SCREEN — z50 ══════════════════ -->
+<div id="lock-screen">
+  <div class="status-bar"><span id="lock-time-s">11:47</span><span class="sb-right">▲▲ ◉</span></div>
+  <div class="lock-body">
+    <div class="lock-date" id="lock-date">Saturday, March 14</div>
+    <div class="lock-clock" id="lock-clock">11:47</div>
+  </div>
+  <div class="lock-notification" id="lock-notif">
+    <div class="notif-row">
+      <span class="notif-app">Messages</span>
+      <span class="notif-time">now</span>
+    </div>
+    <div class="notif-sender">Unknown</div>
+    <div class="notif-preview">You still awake?</div>
+  </div>
+  <div class="lock-hint">tap to open</div>
+</div>
+
+<!-- ══ MOTION NOTIFICATION (side-quest popup) — appears at top of phone frame -->
+<div id="motion-notif" class="motion-notif" aria-live="polite" role="status">
+  <div class="mn-row">
+    <span class="mn-app">Home Cameras</span>
+    <span class="mn-time">now</span>
+  </div>
+  <div class="mn-body" id="mn-body">Motion detected: Front Door</div>
+</div>
+
+<!-- ══ HOME SCREEN — z48 ══════════════════ -->
+<div id="home-screen">
+  <div class="loop-wordmark-home">LOOP</div>
+  <div class="status-bar" style="color:rgba(255,255,255,0.8);justify-content:center">
+    <span id="home-time" style="font-size:15px">11:47</span>
+  </div>
+  <div class="home-bg"></div>
+  <div class="home-content">
+    <div class="reminders-widget">
+      <div class="widget-header">
+        <span class="widget-icon">⊞</span>
+        <span class="widget-title">recents</span>
+      </div>
+      <div class="widget-items" id="widget-items">
+        <div class="widget-item" data-id="r1">
+          <span class="item-text">call dr. about appointment</span>
+          <button class="item-check" onclick="toggleCheck(this,'r1')"></button>
+        </div>
+        <div class="widget-item" data-id="r2">
+          <span class="item-text">pick up prescription</span>
+          <button class="item-check" onclick="toggleCheck(this,'r2')"></button>
+        </div>
+      </div>
+      <div class="widget-add-row">
+        <span>Add a reminder</span>
+        <button class="widget-add-btn" onclick="openReminderSheet()">⊞</button>
+      </div>
+      <div class="widget-label">Reminders</div>
+    </div>
+  </div>
+  <div class="dock">
+    <div class="dock-item" onclick="openMessagesFromHome()">
+      <div class="dock-icon">
+        <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#3A8B3A"/><path d="M12 19C12 17.3 13.3 16 15 16H45C46.7 16 48 17.3 48 19V37C48 38.7 46.7 40 45 40H33L24 47V40H15C13.3 40 12 38.7 12 37V19Z" fill="white"/></svg>
+        <div class="dock-badge">4</div>
+      </div>
+      <div class="dock-label">messages</div>
+    </div>
+    <div class="dock-item" onclick="openRemindersScreen()">
+      <div class="dock-icon">
+        <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#7B68C8"/><rect x="15" y="20" width="30" height="3" rx="1.5" fill="white"/><rect x="15" y="28" width="24" height="3" rx="1.5" fill="white"/><rect x="15" y="36" width="18" height="3" rx="1.5" fill="white"/></svg>
+      </div>
+      <div class="dock-label">reminders</div>
+    </div>
+    <div class="dock-item" onclick="openCamera()">
+      <div class="dock-icon">
+        <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#2a2a3e"/><path d="M10 24C10 22.3 11.3 21 13 21H28L31 17H47C48.7 17 50 18.3 50 20V42C50 43.7 48.7 45 47 45H13C11.3 45 10 43.7 10 42V24Z" fill="#1a1a30"/><circle cx="30" cy="33" r="7" stroke="#4DFFF0" stroke-width="2"/><circle cx="30" cy="33" r="3" fill="#4DFFF0" opacity="0.4"/></svg>
+      </div>
+      <div class="dock-label">home camera</div>
+    </div>
+  </div>
+  <div class="home-swipe-bar"></div>
+</div>
+
+<!-- ══ REMINDERS SCREEN — z49 ═════════════ -->
+<div id="reminders-screen">
+  <div class="status-bar" style="color:#aaa"><span id="rem-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
+  <div class="screen-nav"><button class="back-btn dim" onclick="closeRemindersScreen()">‹ Back</button></div>
+  <div class="reminders-full">
+    <h1 class="reminders-title">Reminders</h1>
+    <div class="reminders-list" id="reminders-list">
+      <div class="reminder-row" data-id="r1">
+        <button class="rem-check" onclick="toggleCheck(this,'r1')"></button>
+        <span class="rem-text">call dr. about appointment</span>
+      </div>
+      <div class="reminder-row" data-id="r2">
+        <button class="rem-check" onclick="toggleCheck(this,'r2')"></button>
+        <span class="rem-text">pick up prescription</span>
+      </div>
+    </div>
+    <button class="rem-add-btn" onclick="openReminderSheet()">+ New Reminder</button>
+  </div>
+</div>
+
+<!-- ══ CAMERA SCREEN — z49 ════════════════ -->
+<div id="camera-screen">
+  <div class="status-bar"><span id="cam-time" style="color:var(--cyan)">11:47</span><span class="sb-right" style="color:var(--cyan)">▲▲ ◉</span></div>
+  <div class="screen-nav">
+    <button class="back-btn" onclick="closeCamera()">‹ Back</button>
+    <span class="loop-wordmark">LOOP</span>
+    <span></span>
+  </div>
+  <div class="camera-content">
+    <h1 class="camera-title">Home Cameras</h1>
+
+    <div class="cam-feed" id="cam-front">
+      <div class="cam-label-row">
+        <span class="cam-name">Front Door</span>
+        <span class="cam-status"><span class="live-dot"></span> Live</span>
+      </div>
+      <div class="cam-view">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" fill="#040408"/>
+          <rect x="0" y="30" width="360" height="20" fill="#d8d8ec" opacity="0.85"/>
+          <ellipse cx="180" cy="40" rx="190" ry="22" fill="white" opacity="0.12"/>
+          <rect x="0" y="50" width="130" height="4" fill="#b0b0cc" opacity="0.7" transform="rotate(-7 0 50)"/>
+          <rect x="0" y="72" width="120" height="3" fill="#909098" opacity="0.5" transform="rotate(-7 0 72)"/>
+          <rect x="18" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.45"/>
+          <rect x="52" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.4"/>
+          <rect x="86" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.38"/>
+          <rect x="230" y="50" width="130" height="4" fill="#b0b0cc" opacity="0.7" transform="rotate(7 230 50)"/>
+          <rect x="240" y="72" width="120" height="3" fill="#909098" opacity="0.5" transform="rotate(7 240 72)"/>
+          <rect x="274" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.45"/>
+          <rect x="308" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.4"/>
+          <rect x="340" y="50" width="3" height="100" fill="#c0c0d0" opacity="0.38"/>
+          <rect x="130" y="30" width="9" height="170" fill="#d0d0e4" opacity="0.75"/>
+          <rect x="221" y="30" width="9" height="170" fill="#d0d0e4" opacity="0.75"/>
+          <rect x="0" y="140" width="360" height="60" fill="#060610"/>
+          <ellipse cx="180" cy="126" rx="30" ry="24" fill="#18182a"/>
+          <ellipse cx="180" cy="126" rx="24" ry="19" fill="#0d0d1c"/>
+          <rect x="164" y="112" width="32" height="2.5" fill="#28283a" opacity="0.9"/>
+          <rect x="164" y="120" width="32" height="2.5" fill="#28283a" opacity="0.9"/>
+          <rect x="164" y="128" width="32" height="2.5" fill="#28283a" opacity="0.9"/>
+          <radialGradient id="vigf" cx="50%" cy="50%" r="55%"><stop offset="58%" stop-color="transparent"/><stop offset="100%" stop-color="#020204" stop-opacity="0.96"/></radialGradient>
+          <ellipse cx="180" cy="100" rx="210" ry="130" fill="url(#vigf)"/>
+          <text x="8" y="192" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.65">CAM 01  22:47:11</text>
+          <text x="285" y="192" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.65">IR NIGHT</text>
+          <circle cx="342" cy="14" r="4" fill="#4DFFF0"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/></circle>
+          <text x="350" y="18" fill="#4DFFF0" font-family="monospace" font-size="9">REC</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cam-feed active-cam" id="cam-back">
+      <div class="cam-label-row">
+        <span class="cam-name">Back Door</span>
+        <span class="cam-status"><span class="live-dot"></span> Last Updated: 3 seconds ago</span>
+      </div>
+      <div class="cam-view">
+        <svg viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="210" fill="#040408"/>
+          <rect x="0" y="148" width="360" height="9" fill="#808090" opacity="0.45"/>
+          <rect x="0" y="157" width="360" height="53" fill="#04040a"/>
+          <rect x="65" y="138" width="230" height="14" fill="#141422" opacity="0.85"/>
+          <ellipse cx="58" cy="88" rx="42" ry="58" fill="#0d0d1a"/>
+          <ellipse cx="58" cy="74" rx="33" ry="44" fill="#141420"/>
+          <rect x="52" y="138" width="12" height="30" fill="#08080f"/>
+          <ellipse cx="58" cy="70" rx="34" ry="7" fill="#2e2e3e" opacity="0.4"/>
+          <ellipse cx="302" cy="88" rx="42" ry="58" fill="#0d0d1a"/>
+          <ellipse cx="302" cy="74" rx="33" ry="44" fill="#141420"/>
+          <rect x="296" y="138" width="12" height="30" fill="#08080f"/>
+          <ellipse cx="302" cy="70" rx="34" ry="7" fill="#2e2e3e" opacity="0.4"/>
+          <rect x="112" y="141" width="15" height="11" rx="1" fill="#1e1e2e"/>
+          <ellipse cx="119" cy="141" rx="9" ry="3.5" fill="#18182a"/>
+          <ellipse cx="119" cy="138" rx="8" ry="5" fill="#181826"/>
+          <rect x="150" y="141" width="15" height="11" rx="1" fill="#1e1e2e"/>
+          <ellipse cx="157" cy="141" rx="9" ry="3.5" fill="#18182a"/>
+          <ellipse cx="157" cy="138" rx="8" ry="5" fill="#181826"/>
+          <rect x="195" y="141" width="15" height="11" rx="1" fill="#1e1e2e"/>
+          <ellipse cx="202" cy="141" rx="9" ry="3.5" fill="#18182a"/>
+          <ellipse cx="202" cy="138" rx="8" ry="5" fill="#181826"/>
+          <rect x="235" y="141" width="15" height="11" rx="1" fill="#1e1e2e"/>
+          <ellipse cx="242" cy="141" rx="9" ry="3.5" fill="#18182a"/>
+          <ellipse cx="242" cy="138" rx="8" ry="5" fill="#181826"/>
+          <radialGradient id="vigb" cx="50%" cy="50%" r="57%"><stop offset="54%" stop-color="transparent"/><stop offset="100%" stop-color="#020205" stop-opacity="0.97"/></radialGradient>
+          <ellipse cx="180" cy="105" rx="218" ry="136" fill="url(#vigb)"/>
+          <text x="8" y="202" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.65">CAM 02  22:47:33</text>
+          <text x="268" y="202" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.65">BACK YARD IR</text>
+          <circle cx="342" cy="14" r="4" fill="#4DFFF0"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" repeatCount="indefinite"/></circle>
+          <text x="350" y="18" fill="#4DFFF0" font-family="monospace" font-size="9">REC</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cam-feed" id="cam-window">
+      <div class="cam-label-row">
+        <span class="cam-name">Bedroom Window</span>
+        <span class="cam-status"><span class="offline-dot"></span> Offline</span>
+      </div>
+      <div class="cam-view">
+        <svg viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="190" fill="#030306"/>
+          <rect x="0" y="0" width="360" height="190" fill="#06060e"/>
+          <rect x="0" y="18" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="36" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="54" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="72" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="90" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="108" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="0" y="126" width="360" height="3" fill="#0e0e1e" opacity="0.9"/>
+          <rect x="62" y="0" width="236" height="24" fill="#16162a"/>
+          <rect x="62" y="22" width="236" height="5" fill="#0a0a18"/>
+          <rect x="118" y="27" width="124" height="96" rx="2" fill="#b8b8d0" opacity="0.55"/>
+          <rect x="122" y="31" width="116" height="88" fill="#090914"/>
+          <rect x="124" y="33" width="112" height="84" fill="#c8b878" opacity="0.1"/>
+          <ellipse cx="180" cy="75" rx="50" ry="38" fill="#e4cc90" opacity="0.07"/>
+          <rect x="178" y="31" width="4" height="88" fill="#b8b8d0" opacity="0.45"/>
+          <rect x="122" y="73" width="116" height="4" fill="#b8b8d0" opacity="0.45"/>
+          <rect x="118" y="27" width="5" height="96" fill="white" opacity="0.22"/>
+          <rect x="238" y="27" width="4" height="96" fill="white" opacity="0.14"/>
+          <ellipse cx="102" cy="163" rx="50" ry="30" fill="#0c0c1a"/>
+          <ellipse cx="102" cy="155" rx="44" ry="22" fill="#121220"/>
+          <ellipse cx="258" cy="163" rx="50" ry="30" fill="#0c0c1a"/>
+          <ellipse cx="258" cy="155" rx="44" ry="22" fill="#121220"/>
+          <ellipse cx="180" cy="166" rx="38" ry="24" fill="#101018"/>
+          <radialGradient id="vigw" cx="50%" cy="50%" r="52%"><stop offset="48%" stop-color="transparent"/><stop offset="100%" stop-color="#020204" stop-opacity="0.97"/></radialGradient>
+          <ellipse cx="180" cy="95" rx="210" ry="122" fill="url(#vigw)"/>
+          <rect x="252" y="9" width="68" height="16" rx="3" fill="#CC3F3F" opacity="0.88"/>
+          <text x="258" y="20" fill="white" font-family="monospace" font-size="8.5" font-weight="bold">● MOTION</text>
+          <text x="8" y="182" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.28">CAM 04  22:51:30</text>
+          <text x="272" y="182" fill="#4DFFF0" font-family="monospace" font-size="9" opacity="0.28">— OFFLINE —</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MESSAGES LIST — z45 ════════════════ -->
+<div id="messages-list-screen">
+  <div class="status-bar"><span id="list-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
+  <div class="messages-list-header">
+    <button class="back-btn" onclick="closeMessagesList()">‹</button>
+    <h2>Messages</h2>
+    <span></span>
+  </div>
+  <div class="contacts-list">
+    <div class="contact-row unread" onclick="returnToChat()">
+      <div class="contact-avi unknown-avi">?</div>
+      <div class="contact-details">
+        <div class="contact-row-top"><span class="contact-row-name">Unknown</span><span class="contact-row-time">11:47 PM</span></div>
+        <div class="contact-row-preview">You still awake?</div>
+      </div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="contact-row unread" onclick="openContact('Mom','Hey sweetie, everything okay? Haven\'t heard from you in a bit.')">
+      <div class="contact-avi">M</div>
+      <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Mom</span><span class="contact-row-time">6:32 PM</span></div><div class="contact-row-preview">Hey sweetie, everything okay?</div></div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="contact-row" onclick="openContact('Dad','Call me when you get a chance. Need to talk.')">
+      <div class="contact-avi">D</div>
+      <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Dad</span><span class="contact-row-time">3:14 PM</span></div><div class="contact-row-preview">Call me when you get a chance.</div></div>
+    </div>
+    <div class="contact-row unread" onclick="openContact('Jess','omg did you see what happened tonight?? call me')">
+      <div class="contact-avi">J</div>
+      <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Jess</span><span class="contact-row-time">11:12 PM</span></div><div class="contact-row-preview">omg did you see what happened tonight</div></div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="contact-row unread" onclick="openContact('Tyler','you coming tomorrow or not')">
+      <div class="contact-avi">T</div>
+      <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Tyler</span><span class="contact-row-time">9:45 PM</span></div><div class="contact-row-preview">you coming tomorrow or not</div></div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="contact-row" onclick="openContact('Maya','let me know when you\'re free this week')">
+      <div class="contact-avi">Ma</div>
+      <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Maya</span><span class="contact-row-time">8:01 PM</span></div><div class="contact-row-preview">let me know when you're free</div></div>
+    </div>
+  </div>
+
+  <!-- contact convo nested inside messages list -->
+  <div id="contact-convo">
+    <div class="status-bar"><span id="convo-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
+    <div class="chat-header">
+      <button class="back-btn" onclick="closeContact()">‹ Messages</button>
+      <div class="chat-header-center">
+        <div class="contact-avi small" id="convo-avi">J</div>
+        <div class="contact-name-header" id="convo-name">Jess</div>
+      </div>
+      <span></span>
+    </div>
+    <div class="messages-area" id="contact-messages"></div>
+    <div class="input-area">
+      <input type="text" id="contact-input" placeholder="Message"/>
+      <button id="contact-send" onclick="sendToContact()">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAT SCREEN — z40 ══════════════════ -->
+<div id="chat-screen">
+  <div class="status-bar"><span id="chat-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
+  <div class="chat-header">
+    <button class="back-btn" onclick="openMessagesList('chat')">‹ Messages</button>
+    <div class="chat-header-center">
+      <div class="unknown-avi-large">?</div>
+      <div class="contact-name-header">Unknown</div>
+      <div class="contact-sub" id="chat-sub">mobile</div>
+    </div>
+    <span></span>
+  </div>
+  <div class="messages-area" id="chat-messages"></div>
+  <div class="typing-indicator" id="typing-indicator">
+    <div class="typing-bubble"><span></span><span></span><span></span></div>
+  </div>
+  <div class="input-area">
+    <input type="text" id="chat-input" placeholder="Message" autocomplete="off"/>
+    <button id="chat-send">→</button>
+  </div>
+</div>
+
+<!-- ══ ENDING OVERLAY — z200 ══════════════ -->
+<div id="ending-overlay">
+  <div class="ending-card">
+    <div class="ending-eyebrow" id="ending-eyebrow">LOOP</div>
+    <div class="ending-title" id="ending-title"></div>
+    <div class="ending-body" id="ending-body"></div>
+    <button class="ending-restart" onclick="restartGame()">↻ Begin again</button>
+  </div>
+</div>
+
+<!-- ══ REMINDER SHEET — z300 ══════════════ -->
+<div id="reminder-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-content">
+    <input type="text" id="sheet-input" placeholder="New reminder…"/>
+    <button class="add-btn" onclick="submitReminderSheet()">Add</button>
+    <button class="cancel-btn" onclick="closeReminderSheet()">Cancel</button>
+  </div>
+</div>
+
+<!-- ══ SURVEILLANCE NOTIFICATION ═════════ -->
+<div id="surveillance-notif">
+  <div id="surv-notif-inner">
+    <div id="surv-notif-row">
+      <div id="surv-notif-icon">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none">
+          <path d="M1 2a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0113 2v7a1.5 1.5 0 01-1.5 1.5H4.5L1 12V2z" fill="#7878AC"/>
+        </svg>
+      </div>
+      <span id="surv-notif-app">Messages</span>
+      <span id="surv-notif-time">now</span>
+    </div>
+    <div id="surv-notif-body">
+      <span id="surv-notif-sender">Unknown</span>
+      <span id="surv-notif-msg"></span>
+    </div>
+  </div>
+</div>
+
+<!-- home bar tap target — sits over the visual indicator bar -->
+<div id="home-bar" onclick="goHome()"></div>
+
+</div><!-- end #phone-frame -->
+
+<script src="sketch.js"></script>
+</body>
+</html>

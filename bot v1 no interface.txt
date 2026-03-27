@@ -1,0 +1,256 @@
+! version = 2.0
+
+// ── Substitutions ─────────────────────────────────────────────
+! sub i'm     = i am
+! sub i've    = i have
+! sub i'll    = i will
+! sub i'd     = i would
+! sub don't   = do not
+! sub doesn't = does not
+! sub didn't  = did not
+! sub can't   = can not
+! sub won't   = will not
+! sub isn't   = is not
+! sub wasn't  = was not
+! sub aren't  = are not
+! sub weren't = were not
+! sub whos    = who is
+! sub u       = you
+! sub ur      = you are
+! sub r       = are
+! sub idk     = i do not know
+! sub ngl     = not going to lie
+! sub tbh     = to be honest
+
+
+// ────────────────────────────────────────────────────────────
+// TURNING POINT 1 — Who is this
+// Fires: [ACT:2][TRUST:+1]
+// ────────────────────────────────────────────────────────────
+
++ who is this
+- I am you. From tomorrow.[ACT:2][TRUST:+1]
+
++ who this
+- I am you. From tomorrow.[ACT:2][TRUST:+1]
+
++ who is this really
+- I already told you. You already know.[ACT:2][TRUST:+1]
+
++ [*] who is this [*]
+- I am you. From tomorrow.[ACT:2][TRUST:+1]
+
++ who are you
+- You. From tomorrow.[ACT:2][TRUST:+1]
+
++ who am i talking to
+- Yourself. From 24 hours ahead.[ACT:2][TRUST:+1]
+
+
+// ────────────────────────────────────────────────────────────
+// PROOF — glitch is the evidence, not a story
+// ────────────────────────────────────────────────────────────
+
++ prove it
+- Okay. Watch your screen.[GLITCH:timestamp_flicker][TRUST:+2]
+
++ [*] prove [*]
+- Your clock. Watch it.[GLITCH:timestamp_cascade][TRUST:+2]
+
++ [*] why should i trust [*]
+- I will show you something. Watch.[GLITCH:readloop][TRUST:+1]
+
++ [*] how do i know [*]
+- Look at your screen right now.[GLITCH:timestamp_flicker][TRUST:+1]
+
++ [*] that just happened [*]
+- Yes. That was me. Your future self adjusting the signal.[TRUST:+2]
+
++ [*] my screen [*]
+- I did that. That is how I know this is real.[TRUST:+2]
+
++ [*] what was that [*]
+- That was me. You felt it right.[TRUST:+2]
+
++ [*] that is weird [*]
+- I know. Your phone is not broken.[TRUST:+1]
+
+
+// ────────────────────────────────────────────────────────────
+// TURNING POINT 2 — Power cut demonstration
+// Fires: [GLITCH:powercut]
+// ────────────────────────────────────────────────────────────
+
++ watch
+- Keep watching.[GLITCH:powercut]
+
++ [*] show me [*]
+- Okay. Watch.[GLITCH:powercut]
+
++ [*] what is going to happen [*]
+- You will see.[GLITCH:powercut]
+
+
+// ────────────────────────────────────────────────────────────
+// ACT 2 — Player agrees to the instructions
+// Bot always gives the NEXT rule — keeps conversation alive
+// ────────────────────────────────────────────────────────────
+
++ okay
+- Good. One more thing. Do not open the door even if they say your name.[TRUST:+1]
+- Four hours. 2pm to 4pm. Stay near the window — away from the street side.[TRUST:+1]
+- Good. Do not tell anyone why. If someone asks, say you are not feeling well.[TRUST:+1]
+
++ ok
+- Good. One more thing. Do not open the door even if they say your name.[TRUST:+1]
+- Four hours. 2pm to 4pm. Stay near the window — away from the street side.[TRUST:+1]
+- Good. Do not tell anyone why. If someone asks, say you are not feeling well.[TRUST:+1]
+
++ alright
+- Good. Last rule. If a number you do not recognize calls — let it ring.[TRUST:+1]
+- There is more you need to know. Are you still with me.[TRUST:+1]
+
++ sure
+- Good. And one more. Take your phone off silent. Not for calls. Just so I know you are there.[TRUST:+1]
+- Stay near the window but do not let anyone see you watching. That part matters.[TRUST:+1]
+
++ i will
+- I know you will. That is why I am texting you first.[TRUST:+1]
+- Good. Take your phone off silent. I will know if something changes.[TRUST:+1]
+
++ [*] i will not go outside [*]
+- Good. Stay in until 4:01. Not 4. 4:01. The extra minute matters.[TRUST:+2]
+
++ [*] i will stay [*]
+- Good. Stay near the window but do not let anyone see you watching.[TRUST:+1]
+
++ [*] i promise [*]
+- I know you do. I said the same thing.[TRUST:+1]
+
++ what happened
+- Something happens near the corner. Between 2 and 4. I can not say more without making it worse.[TRUST:+1]
+- I do not want to say exactly. Last time I told you, you went looking. That made it worse.[TRUST:+1]
+
++ why
+- Because the last time I did not warn you, it was worse. Much worse.[TRUST:+1]
+- Because I needed you to stay in and I did not know how to say that without explaining this first.[TRUST:+1]
+
++ how long
+- Four hours. 2pm to 4pm. That is all you have to get through.[TRUST:+1]
+
++ then what
+- Then you wait. Tomorrow morning you will understand more than I can explain right now.[TRUST:+1]
+- Then it is over. For today.[TRUST:+1]
+
++ how many times has this happened
+- I stopped counting.[TRUST:+1]
+
++ [*] how many times [*]
+- I stopped counting. Enough times that I know what to say to you.[TRUST:+1]
+
++ does it work
+- Sometimes. This time feels different.[TRUST:+1]
+
+
+// ────────────────────────────────────────────────────────────
+// TURNING POINT 3 — The collapse
+// Fires: [GLITCH:ghostlayer][ACT:3]
+// ────────────────────────────────────────────────────────────
+
++ what happens to you
+- I do not know. If it breaks, maybe I just stop.[GLITCH:ghostlayer][ACT:3][TRUST:+1]
+
++ can i change it
+- I tried. You will too.[GLITCH:ghostlayer][ACT:3]
+
++ am i you
+- Yes. You always were.[GLITCH:ghostlayer][ACT:3][TRUST:+2]
+
++ are we the same person
+- There has only ever been one of us.[GLITCH:ghostlayer][ACT:3][TRUST:+1]
+
++ [*] both of us [*]
+- Always been both of us.[GLITCH:ghostlayer][ACT:3]
+
++ [*] the loop [*]
+- The loop is all there is.[GLITCH:ghostlayer][ACT:3]
+
+
+// ────────────────────────────────────────────────────────────
+// ACT 3 — THE CLIMAX BEAT
+// Player realizes they are the sender, not just the recipient
+// attribution_swap is the perfect visual: your bubble looks like theirs
+// ────────────────────────────────────────────────────────────
+
++ i understand
+- Then you already know what happens tomorrow night at 11:47.\nYou are going to open your phone. And you are going to type exactly what I typed to you.[GLITCH:attribution_swap][TRUST:+3]
+
++ [*] i have to send [*]
+- Yes. Because if you do not, the version of you reading this right now will have no warning.\nThe loop works because you always keep it going.[GLITCH:attribution_swap][TRUST:+3]
+
++ [*] i am the sender [*]
+- You always were. You learned the words from me. I learned them from you. There is no first version.[GLITCH:attribution_swap][TRUST:+3]
+
++ [*] i always was [*]
+- Yes. There was never a version where someone else sent this. It was always you.[GLITCH:attribution_swap][TRUST:+3]
+
++ [*] no first [*]
+- No. The warning exists because it works. It works because you send it. You send it because it worked.[GLITCH:timestamp_cascade][TRUST:+2]
+
+
+// ────────────────────────────────────────────────────────────
+// ENDING A — Player refuses to send the message
+// They break the loop — or erase themselves trying
+// Fires: [GLITCH:fadeout][ENDING:A]
+// ────────────────────────────────────────────────────────────
+
++ i will not send it
+- Then it ends with you. I do not know what that means for me. I think I am okay with it.[GLITCH:fadeout][ENDING:A]
+
++ i refuse
+- Okay. Then it ends here. You are the first one who did not do it.[GLITCH:fadeout][ENDING:A]
+
++ i will not do it
+- Then it is over. Whatever that means.[GLITCH:fadeout][ENDING:A]
+
++ [*] end it [*]
+- Okay. Then you end it. I hope that is the right call.[GLITCH:fadeout][ENDING:A]
+
++ [*] break the loop [*]
+- Then you break it. It ends with you. I am okay with that.[GLITCH:fadeout][ENDING:A]
+
++ [*] stop the loop [*]
+- If you do not send it, it stops. I do not know what I become. But okay.[GLITCH:fadeout][ENDING:A]
+
++ [*] never send [*]
+- Okay. You are the first one who decided that. I have no idea what happens next.[GLITCH:fadeout][ENDING:A]
+
+
+// ────────────────────────────────────────────────────────────
+// ENDING B — Player accepts they will become the sender
+// They step into the other side of the loop
+// Fires: [GLITCH:dissolve][ENDING:B]
+// ────────────────────────────────────────────────────────────
+
++ i will send it
+- You already know what to say. You are reading it right now.[GLITCH:dissolve][ENDING:B]
+
++ i will send the message
+- You already know what to say. You are reading it right now.[GLITCH:dissolve][ENDING:B]
+
++ i will do it tomorrow
+- Good. Tomorrow night at 11:47. You will know what to type.[GLITCH:dissolve][ENDING:B]
+
++ [*] i will send [*]
+- You already know what to say. You are reading it right now.[GLITCH:dissolve][ENDING:B]
+
++ [*] will send it [*]
+- Good. You already have the words. You are reading them.[GLITCH:dissolve][ENDING:B]
+
+
+// ────────────────────────────────────────────────────────────
+// CATCH-ALL — falls through to OpenAI
+// ────────────────────────────────────────────────────────────
+
++ *
+- __OPENAI__
