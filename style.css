@@ -35,32 +35,31 @@ html,body{
 }
 
 /* ── PHONE FRAME ────────────────────────── */
-/* iPhone 16 standard: 393×852 (6.1")       */
-/* iPhone 16 Plus:     430×932 (6.7")       */
-/* Uses 393×852 as base, scales up on       */
-/* taller viewports. On mobile it fills     */
-/* the screen naturally.                    */
+/* iPhone 8: 375×667 (4.7")                */
+/* Uses 375×667 as base, scales up on      */
+/* taller viewports. On mobile it fills    */
+/* the screen naturally.                   */
 #phone-frame{
   position:relative;
-  width:393px;
-  height:852px;
+  width:375px;
+  height:667px;
   max-width:100vw;
   max-height:100vh;
   background:var(--bg);
   overflow:hidden;
-  border-radius:48px;
+  border-radius:40px;
   box-shadow:
     0 0 0 2px rgba(255,255,255,0.08),
     0 0 0 6px #111,
     0 0 80px rgba(0,0,0,0.8);
   flex-shrink:0;
 }
-/* On larger screens, use 6.7" Plus size */
-@media (min-height:940px) and (min-width:440px){
-  #phone-frame{ width:430px; height:932px; }
+/* On larger screens, use slightly larger variant */
+@media (min-height:700px) and (min-width:400px){
+  #phone-frame{ width:393px; height:700px; }
 }
 /* On actual mobile — fill the whole screen, no bezel */
-@media (max-width:440px){
+@media (max-width:400px){
   #phone-frame{
     width:100vw;
     height:100vh;
@@ -68,24 +67,13 @@ html,body{
     box-shadow:none;
   }
   #phone-frame::before,
-  #phone-frame::after{ display:none; }  /* real phone has its own notch/indicator */
+  #phone-frame::after{ display:none; }  /* real phone has its own physical home button */
   #phone-frame > .scanlines{ border-radius:0; }
 }
-/* Dynamic island notch */
+/* iPhone 8 has no notch */
 #phone-frame::before{
-  content:'';
-  position:absolute;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  width:126px;
-  height:36px;
-  background:#000;
-  border-radius:20px;
-  z-index:999;
-  pointer-events:none;
+  display:none;
 }
-/* Home indicator bar — now handled by #home-bar (interactive) */
 
 /* scanline texture — scoped to phone frame */
 body::after{display:none;}  /* disable old body scanline */
@@ -116,7 +104,7 @@ body::after{display:none;}  /* disable old body scanline */
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:54px 24px 6px;  /* clear Dynamic Island notch */
+  padding:20px 24px 6px;  /* iPhone 8 has standard top bar */
   font-family:'DM Mono',monospace;
   font-weight:300;
   font-size:11px;
@@ -231,7 +219,7 @@ body::after{display:none;}  /* disable old body scanline */
 }
 .lock-hint{
   position:absolute;
-  bottom:48px;  /* moved up */
+  bottom:72px;  /* above home button */
   left:50%;
   transform:translateX(-50%);
   font-size:11px;
