@@ -779,7 +779,7 @@ body::after{display:none;}  /* disable old body scanline */
 .messages-area{
   flex:1;
   overflow-y:auto;
-  padding:16px 16px 8px;
+  padding:16px 16px 120px;
   display:flex;
   flex-direction:column;
   scroll-behavior:smooth;
