@@ -632,28 +632,15 @@ function closeContact() {
 
 function openRemindersScreen() {
   const rs = document.getElementById('reminders-screen');
-  const hs = document.getElementById('home-screen');
-  rs.classList.add('on');
-  rs.style.pointerEvents = 'all';
-  if (hs) hs.style.pointerEvents = 'none';
+  rs.style.transform = 'translateX(0)';
 }
 function closeRemindersScreen() {
-  const rs = document.getElementById('reminders-screen');
-  const hs = document.getElementById('home-screen');
-  rs.classList.remove('on');
-  rs.style.pointerEvents = 'none';
-  if (hs) hs.style.pointerEvents = 'auto';
+  document.getElementById('reminders-screen').style.transform = 'translateX(100%)';
 }
 
 let cameraCheckedAfterMotion = false;
 
 function openCamera() {
-  const cs = document.getElementById('camera-screen');
-  const hs = document.getElementById('home-screen');
-  cs.classList.add('on');
-  cs.style.pointerEvents = 'all';
-  if (hs) hs.style.pointerEvents = 'none';
-
   document.getElementById('camera-screen').style.transform = 'translateX(0)';
 
   // If cameras are degrading and player opens camera — front door glitches hard
@@ -691,12 +678,7 @@ function closeCamera() {
   // exit any fullscreen cam first
   const fs = document.querySelector('.cam-fullscreen');
   if (fs) exitFullscreenCam(fs);
-  const cs = document.getElementById('camera-screen');
-  const hs = document.getElementById('home-screen');
-  cs.classList.remove('on');
-  cs.style.pointerEvents = 'none';
-  if (hs) hs.style.pointerEvents = 'auto';
-  cs.style.transform = 'translateX(100%)';
+  document.getElementById('camera-screen').style.transform = 'translateX(100%)';
 }
 
 // ── CAMERA SELECT / FULLSCREEN ───────────────────────────────
