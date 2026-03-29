@@ -499,8 +499,9 @@ body::after{display:none;}  /* disable old body scanline */
   transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
   display:flex;
   flex-direction:column;
+  pointer-events:none;
 }
-#reminders-screen.on{transform:translateX(0);}
+#reminders-screen.on{transform:translateX(0);pointer-events:all;}
 .reminders-full{
   flex:1;
   overflow-y:auto;
@@ -560,8 +561,9 @@ body::after{display:none;}  /* disable old body scanline */
   display:flex;
   flex-direction:column;
   overflow:hidden;
+  pointer-events:none;
 }
-#camera-screen.on{transform:translateX(0);}
+#camera-screen.on{transform:translateX(0);pointer-events:all;}
 .camera-content{
   flex:1;
   overflow-y:auto;
