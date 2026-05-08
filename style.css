@@ -6,6 +6,7 @@
   --bg:          #06060A;
   --surface:     #12121C;
   --surface-alt: #0E0E18;
+  --surface-screen: #1a1a2e;
   --bubble-them: #12121C;
   --bubble-you:  #1E2A3A;
   --text:        #D8D8D8;
@@ -220,8 +221,7 @@ body::after{display:none;}  /* disable old body scanline */
   transform:translateX(-50%) translateY(16px);
   width:min(360px,88vw);
   background:rgba(18,18,28,0.88);
-  border:1px solid var(--border);
-  border-left:2px solid var(--cyan);
+  border:1px solid rgba(77,255,240,0.35);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border-radius:14px;
@@ -364,7 +364,6 @@ body::after{display:none;}  /* disable old body scanline */
   justify-content:space-between;
 }
 .widget-item.story-item{
-  border-left:2px solid var(--cyan);
   background:rgba(77,255,240,0.07);
 }
 .widget-item.story-item .item-text{
@@ -380,7 +379,9 @@ body::after{display:none;}  /* disable old body scanline */
   background:transparent;
   cursor:pointer;
   flex-shrink:0;
+  position:relative;
 }
+.item-check::before{content:'';position:absolute;inset:-11px;}
 .item-check.checked{
   background:rgba(255,255,255,0.3);
   border-color:rgba(255,255,255,0.6);
@@ -391,7 +392,7 @@ body::after{display:none;}  /* disable old body scanline */
   justify-content:space-between;
   padding:10px 2px 2px;
   font-size:13px;
-  color:rgba(255,255,255,0.4);
+  color:rgba(255,255,255,0.55);
 }
 .widget-add-btn{
   background:transparent;
@@ -404,7 +405,7 @@ body::after{display:none;}  /* disable old body scanline */
 .widget-label{
   text-align:center;
   font-size:11px;
-  color:rgba(255,255,255,0.3);
+  color:rgba(255,255,255,0.55);
   margin-top:8px;
   letter-spacing:0.05em;
 }
@@ -436,8 +437,7 @@ body::after{display:none;}  /* disable old body scanline */
   min-width:280px;
   max-width:88vw;
   background:rgba(18,18,28,0.96);
-  border:1px solid var(--border);
-  border-left:3px solid var(--cyan);
+  border:1px solid rgba(77,255,240,0.35);
   color:var(--text);
   padding:10px 14px;
   border-radius:12px;
@@ -453,7 +453,6 @@ body::after{display:none;}  /* disable old body scanline */
 .motion-notif .mn-app{ font-weight:600; color:var(--cyan); }
 .motion-notif .mn-body{ color:var(--text); font-size:13px; }
 .motion-notif.warn-cyan{
-  border-left-color:var(--cyan);
   box-shadow:0 6px 18px rgba(0,0,0,0.6), 0 0 24px rgba(77,255,240,0.3), 0 0 8px rgba(77,255,240,0.15);
 }
 .motion-notif.warn-cyan .mn-body{ color:var(--cyan); }
@@ -494,7 +493,7 @@ body::after{display:none;}  /* disable old body scanline */
 #reminders-screen{
   position:absolute;inset:0;
   z-index:49;
-  background:#1a1a2e;
+  background:var(--surface-screen);
   transform:translateX(100%);
   transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
   display:flex;
@@ -529,7 +528,9 @@ body::after{display:none;}  /* disable old body scanline */
   background:transparent;
   cursor:pointer;
   flex-shrink:0;
+  position:relative;
 }
+.rem-check::before{content:'';position:absolute;inset:-11px;}
 .rem-check.checked{background:rgba(255,255,255,0.3);}
 .rem-text{font-size:14px;color:#fff;}
 .rem-text.story{
@@ -834,6 +835,9 @@ body::after{display:none;}  /* disable old body scanline */
   padding:4px 0;
   letter-spacing:-0.02em;
   white-space:nowrap;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
 }
 .back-btn.dim{color:var(--text-dim);}
 .screen-nav{
@@ -976,9 +980,10 @@ body::after{display:none;}  /* disable old body scanline */
   letter-spacing:-0.04em;
   outline:none;
 }
+.input-area input:focus-visible{outline:1.5px solid var(--cyan);outline-offset:2px;}
 .input-area input::placeholder{color:var(--text-dim);font-weight:300;}
 .input-area button{
-  width:34px;height:34px;
+  width:44px;height:44px;
   border-radius:50%;
   background:var(--surface);
   border:none;
@@ -1089,6 +1094,7 @@ body::after{display:none;}  /* disable old body scanline */
   outline:none;
 }
 .sheet-content input:focus{border-color:var(--cyan);}
+.sheet-content input:focus-visible{outline:1.5px solid var(--cyan);outline-offset:2px;}
 .sheet-content button{
   padding:12px;
   border-radius:10px;
@@ -1097,6 +1103,7 @@ body::after{display:none;}  /* disable old body scanline */
   font-size:13px;
   cursor:pointer;
 }
+button:focus-visible{outline:1.5px solid var(--cyan);outline-offset:2px;}
 .sheet-content .add-btn{background:var(--cyan);color:#000;}
 .sheet-content .cancel-btn{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
 
@@ -1227,7 +1234,7 @@ body::after{display:none;}  /* disable old body scanline */
   z-index:300;
   padding:10px 14px;
   transform:translateY(-110%);
-  transition:transform 340ms cubic-bezier(0.34,1.3,0.64,1);
+  transition:transform 340ms cubic-bezier(0.22,1,0.36,1);
   pointer-events:auto; /* allow clicking to jump to Unknown chat */
   cursor:pointer;
 }
@@ -1294,6 +1301,23 @@ body::after{display:none;}  /* disable old body scanline */
   50%{background:rgba(255,59,92,0.12);}
 }
 
+/* ── CSS SMASH SHAKE — replaces JS setInterval ── */
+@keyframes smashShakeCSS{
+  0%  {transform:translate(0,0);}
+  10% {transform:translate(-5px,2px);}
+  22% {transform:translate(5px,-3px);}
+  33% {transform:translate(-4px,4px);}
+  44% {transform:translate(5px,-2px);}
+  55% {transform:translate(-4px,3px);}
+  66% {transform:translate(4px,-4px);}
+  77% {transform:translate(-3px,2px);}
+  88% {transform:translate(2px,-2px);}
+  100%{transform:translate(0,0);}
+}
+#phone-frame.smash-shake{
+  animation:smashShakeCSS 0.56s cubic-bezier(0.22,1,0.36,1);
+}
+
 /* ── CRASH EFFECTS — ENDING B ───────────── */
 #phone-frame.crash-blackout>*:not(.scanlines):not(#ending-overlay){
   opacity:0!important;
@@ -1311,4 +1335,28 @@ body::after{display:none;}  /* disable old body scanline */
   50%{opacity:0.8;filter:hue-rotate(180deg);}
   75%{opacity:0.05;}
   100%{opacity:1;}
+}
+
+/* ── REDUCED MOTION ──────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  .glitch-shake,
+  .cam-horror .camera-content,
+  .cam-horror-intense .camera-content,
+  .cam-feed-glitch,
+  #phone-frame.smash-shake,
+  .cam-horror-blackout .camera-content{
+    animation:none!important;
+  }
+  .screen,
+  #lock-screen,
+  #home-screen,
+  #reminders-screen,
+  #camera-screen,
+  #messages-list-screen,
+  #contact-convo,
+  #chat-screen,
+  #reminder-sheet,
+  #surveillance-notif{
+    transition-duration:0.01ms!important;
+  }
 }

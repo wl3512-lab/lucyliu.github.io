@@ -74,35 +74,35 @@
       <div class="widget-items" id="widget-items">
         <div class="widget-item" data-id="r1">
           <span class="item-text">call dr. about appointment</span>
-          <button class="item-check" onclick="toggleCheck(this,'r1')"></button>
+          <button class="item-check" onclick="toggleCheck(this,'r1')" aria-label="Mark complete"></button>
         </div>
         <div class="widget-item" data-id="r2">
           <span class="item-text">pick up prescription</span>
-          <button class="item-check" onclick="toggleCheck(this,'r2')"></button>
+          <button class="item-check" onclick="toggleCheck(this,'r2')" aria-label="Mark complete"></button>
         </div>
       </div>
       <div class="widget-add-row">
         <span>Add a reminder</span>
-        <button class="widget-add-btn" onclick="openReminderSheet()">⊞</button>
+        <button class="widget-add-btn" onclick="openReminderSheet()" aria-label="Add reminder">⊞</button>
       </div>
       <div class="widget-label">Reminders</div>
     </div>
   </div>
   <div class="dock">
-    <div class="dock-item" onclick="openMessagesFromHome()">
+    <div class="dock-item" role="button" tabindex="0" onclick="openMessagesFromHome()">
       <div class="dock-icon">
         <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#3A8B3A"/><path d="M12 19C12 17.3 13.3 16 15 16H45C46.7 16 48 17.3 48 19V37C48 38.7 46.7 40 45 40H33L24 47V40H15C13.3 40 12 38.7 12 37V19Z" fill="white"/></svg>
         <div class="dock-badge">4</div>
       </div>
       <div class="dock-label">messages</div>
     </div>
-    <div class="dock-item" onclick="openRemindersScreen()">
+    <div class="dock-item" role="button" tabindex="0" onclick="openRemindersScreen()">
       <div class="dock-icon">
         <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#7B68C8"/><rect x="15" y="20" width="30" height="3" rx="1.5" fill="white"/><rect x="15" y="28" width="24" height="3" rx="1.5" fill="white"/><rect x="15" y="36" width="18" height="3" rx="1.5" fill="white"/></svg>
       </div>
       <div class="dock-label">reminders</div>
     </div>
-    <div class="dock-item" onclick="openCamera()">
+    <div class="dock-item" role="button" tabindex="0" onclick="openCamera()">
       <div class="dock-icon">
         <svg viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="14" fill="#2a2a3e"/><path d="M10 24C10 22.3 11.3 21 13 21H28L31 17H47C48.7 17 50 18.3 50 20V42C50 43.7 48.7 45 47 45H13C11.3 45 10 43.7 10 42V24Z" fill="#1a1a30"/><circle cx="30" cy="33" r="7" stroke="#4DFFF0" stroke-width="2"/><circle cx="30" cy="33" r="3" fill="#4DFFF0" opacity="0.4"/></svg>
       </div>
@@ -115,16 +115,16 @@
 <!-- ══ REMINDERS SCREEN — z49 ═════════════ -->
 <div id="reminders-screen">
   <div class="status-bar" style="color:#aaa"><span id="rem-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
-  <div class="screen-nav"><button class="back-btn dim" onclick="closeRemindersScreen()">‹ Back</button></div>
+  <div class="screen-nav"><button class="back-btn dim" onclick="closeRemindersScreen()" aria-label="Back">‹ Back</button></div>
   <div class="reminders-full">
     <h1 class="reminders-title">Reminders</h1>
     <div class="reminders-list" id="reminders-list">
       <div class="reminder-row" data-id="r1">
-        <button class="rem-check" onclick="toggleCheck(this,'r1')"></button>
+        <button class="rem-check" onclick="toggleCheck(this,'r1')" aria-label="Mark complete"></button>
         <span class="rem-text">call dr. about appointment</span>
       </div>
       <div class="reminder-row" data-id="r2">
-        <button class="rem-check" onclick="toggleCheck(this,'r2')"></button>
+        <button class="rem-check" onclick="toggleCheck(this,'r2')" aria-label="Mark complete"></button>
         <span class="rem-text">pick up prescription</span>
       </div>
     </div>
@@ -136,7 +136,7 @@
 <div id="camera-screen">
   <div class="status-bar"><span id="cam-time" style="color:var(--cyan)">11:47</span><span class="sb-right" style="color:var(--cyan)">▲▲ ◉</span></div>
   <div class="screen-nav">
-    <button class="back-btn" onclick="closeCamera()">‹ Back</button>
+    <button class="back-btn" onclick="closeCamera()" aria-label="Back">‹ Back</button>
     <span class="loop-wordmark">LOOP</span>
     <span></span>
   </div>
@@ -144,7 +144,7 @@
     <h1 class="camera-title">Home Cameras</h1>
 
     <div class="cam-feed" id="cam-front" onclick="selectCam(this)">
-      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)" aria-label="Exit fullscreen">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Front Door</span>
         <span class="cam-status"><span class="live-dot"></span> Live</span>
@@ -183,7 +183,7 @@
     </div>
 
     <div class="cam-feed active-cam" id="cam-back" onclick="selectCam(this)">
-      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)" aria-label="Exit fullscreen">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Back Door</span>
         <span class="cam-status"><span class="live-dot"></span> Last Updated: 3 seconds ago</span>
@@ -225,7 +225,7 @@
     </div>
 
     <div class="cam-feed" id="cam-window" onclick="selectCam(this)">
-      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)">‹</button>
+      <button class="cam-fs-back" onclick="event.stopPropagation(); exitFullscreenCam(this.parentElement)" aria-label="Exit fullscreen">‹</button>
       <div class="cam-label-row">
         <span class="cam-name">Bedroom Window</span>
         <span class="cam-status"><span class="offline-dot"></span> Offline</span>
@@ -272,12 +272,12 @@
 <div id="messages-list-screen">
   <div class="status-bar"><span id="list-time">11:47</span><span class="sb-right">▲▲ ◉</span></div>
   <div class="messages-list-header">
-    <button class="back-btn" onclick="closeMessagesList()">‹</button>
+    <button class="back-btn" onclick="closeMessagesList()" aria-label="Back">‹</button>
     <h2>Messages</h2>
     <span></span>
   </div>
   <div class="contacts-list">
-    <div class="contact-row unread" onclick="returnToChat()">
+    <div class="contact-row unread" role="button" tabindex="0" onclick="returnToChat()">
       <div class="contact-avi unknown-avi">?</div>
       <div class="contact-details">
         <div class="contact-row-top"><span class="contact-row-name">Unknown</span><span class="contact-row-time">11:47 PM</span></div>
@@ -285,26 +285,26 @@
       </div>
       <div class="unread-dot"></div>
     </div>
-    <div class="contact-row unread" onclick="openContact('Mom','Hey sweetie, everything okay? Haven\'t heard from you in a bit.')">
+    <div class="contact-row unread" role="button" tabindex="0" onclick="openContact('Mom','Hey sweetie, everything okay? Haven\'t heard from you in a bit.')">
       <div class="contact-avi">M</div>
       <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Mom</span><span class="contact-row-time">6:32 PM</span></div><div class="contact-row-preview">Hey sweetie, everything okay?</div></div>
       <div class="unread-dot"></div>
     </div>
-    <div class="contact-row" onclick="openContact('Dad','Call me when you get a chance. Need to talk.')">
+    <div class="contact-row" role="button" tabindex="0" onclick="openContact('Dad','Call me when you get a chance. Need to talk.')">
       <div class="contact-avi">D</div>
       <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Dad</span><span class="contact-row-time">3:14 PM</span></div><div class="contact-row-preview">Call me when you get a chance.</div></div>
     </div>
-    <div class="contact-row unread" onclick="openContact('Jess','omg did you see what happened tonight?? call me')">
+    <div class="contact-row unread" role="button" tabindex="0" onclick="openContact('Jess','omg did you see what happened tonight?? call me')">
       <div class="contact-avi">J</div>
       <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Jess</span><span class="contact-row-time">11:12 PM</span></div><div class="contact-row-preview">omg did you see what happened tonight</div></div>
       <div class="unread-dot"></div>
     </div>
-    <div class="contact-row unread" onclick="openContact('Tyler','you coming tomorrow or not')">
+    <div class="contact-row unread" role="button" tabindex="0" onclick="openContact('Tyler','you coming tomorrow or not')">
       <div class="contact-avi">T</div>
       <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Tyler</span><span class="contact-row-time">9:45 PM</span></div><div class="contact-row-preview">you coming tomorrow or not</div></div>
       <div class="unread-dot"></div>
     </div>
-    <div class="contact-row" onclick="openContact('Maya','let me know when you\'re free this week')">
+    <div class="contact-row" role="button" tabindex="0" onclick="openContact('Maya','let me know when you\'re free this week')">
       <div class="contact-avi">Ma</div>
       <div class="contact-details"><div class="contact-row-top"><span class="contact-row-name">Maya</span><span class="contact-row-time">8:01 PM</span></div><div class="contact-row-preview">let me know when you're free</div></div>
     </div>
@@ -324,7 +324,7 @@
     <div class="messages-area" id="contact-messages"></div>
     <div class="input-area">
       <input type="text" id="contact-input" placeholder="Message"/>
-      <button id="contact-send" onclick="sendToContact()">→</button>
+      <button id="contact-send" onclick="sendToContact()" aria-label="Send message">→</button>
     </div>
   </div>
 </div>
@@ -347,7 +347,7 @@
   </div>
   <div class="input-area">
     <input type="text" id="chat-input" placeholder="Message" autocomplete="off"/>
-    <button id="chat-send">→</button>
+    <button id="chat-send" aria-label="Send message">→</button>
   </div>
 </div>
 

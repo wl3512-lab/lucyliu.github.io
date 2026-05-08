@@ -224,20 +224,9 @@ function triggerSmashEffect() {
   setTimeout(() => { flash.style.opacity = '0'; }, 50);
   setTimeout(() => { flash.remove(); }, 400);
 
-  // Heavy screen shake
-  frame.style.transition = 'none';
-  let shakes = 0;
-  const shakeLoop = setInterval(() => {
-    shakes++;
-    const x = (Math.random() - 0.5) * 12;
-    const y = (Math.random() - 0.5) * 8;
-    frame.style.transform = `translate(${x}px, ${y}px)`;
-    if (shakes >= 14) {
-      clearInterval(shakeLoop);
-      frame.style.transition = 'transform 0.2s ease';
-      frame.style.transform = '';
-    }
-  }, 40);
+  // CSS-based shake — compositor thread, no layout recalc
+  frame.classList.add('smash-shake');
+  frame.addEventListener('animationend', () => frame.classList.remove('smash-shake'), { once: true });
 
   // Glitch on canvas
   if (p5inst) p5inst.triggerGlitch(60);
@@ -379,6 +368,14 @@ window.addEventListener('load', async () => {
   setupChatInput();
   setupContactInput();
   startAmbientGlitches();
+
+  // Keyboard activation for role="button" divs (dock items, contact rows)
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute('role') === 'button') {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
 });
 
 // Scripted instruction queue — these WILL be delivered regardless of AI quality
