@@ -1610,6 +1610,7 @@ function triggerEnding(key) {
 
   setTimeout(() => {
     document.getElementById('ending-overlay').classList.add('active');
+    if (p5inst) p5inst.noLoop();
   }, 1200);
 }
 
@@ -1643,6 +1644,7 @@ function triggerFadeoutEndingA() {
       ts.style.opacity = '0';
       setTimeout(() => {
         document.getElementById('ending-overlay').classList.add('active');
+        if (p5inst) p5inst.noLoop();
       }, 1200);
     }, 2500);
   }, total * delay + 800);
@@ -1678,6 +1680,7 @@ function triggerEndingBGlitch() {
       clocks.forEach(el => { el.textContent = '11:47 PM'; });
       setTimeout(() => {
         document.getElementById('ending-overlay').classList.add('active');
+        if (p5inst) p5inst.noLoop();
       }, 800);
     }
   }, 200);
@@ -1828,12 +1831,14 @@ function triggerCameraHorror() {
   // Phase 5 — ending card
   setTimeout(() => {
     document.getElementById('ending-overlay').classList.add('active');
+    if (p5inst) p5inst.noLoop();
   }, 6200);
 }
 
 // ── RESET ──────────────────────────────────────────────────────
 function restartGame() {
   document.getElementById('ending-overlay').classList.remove('active');
+  if (p5inst) p5inst.loop();
   document.getElementById('chat-messages').innerHTML = '';
   document.getElementById('contact-messages').innerHTML = '';
   document.getElementById('chat-sub').textContent = 'mobile';
